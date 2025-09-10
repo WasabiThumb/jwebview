@@ -33,4 +33,4 @@ jobs:
         name: Upload artifact
         with:
           path: natives/build/cmake/*.so
-          if-no-files-found: fail
+          if-no-files-found: error

@@ -1,0 +1,15 @@
+[versions]
+junit = "5.7.1"
+annotations = "26.0.1"
+xpdy = "0.2.1"
+gson = "2.13.1"
+
+[libraries]
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit" }
+annotations = { group = "org.jetbrains", name = "annotations", version.ref = "annotations" }
+xpdy = { group = "io.github.wasabithumb", name = "xpdy", version.ref = "xpdy" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+
+[plugins]
+cmake = { id = "dev.welbyseely.gradle-cmake-plugin", version = "0.1.0" }
+publish = { id = "com.vanniktech.maven.publish", version = "0.32.0" }

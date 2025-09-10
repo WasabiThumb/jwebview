@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/buildSrc" name="buildSrc">
+                <projects>
+                  <project path="$PROJECT_DIR$/buildSrc" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleHome" value="/usr/share/java/gradle" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/api" />
+            <option value="$PROJECT_DIR$/bridge" />
+            <option value="$PROJECT_DIR$/buildSrc" />
+            <option value="$PROJECT_DIR$/internals" />
+            <option value="$PROJECT_DIR$/natives" />
+            <option value="$PROJECT_DIR$/natives/all" />
+            <option value="$PROJECT_DIR$/natives/linux" />
+            <option value="$PROJECT_DIR$/natives/linux/amd64" />
+            <option value="$PROJECT_DIR$/natives/macos" />
+            <option value="$PROJECT_DIR$/natives/macos/amd64" />
+            <option value="$PROJECT_DIR$/natives/macos/arm64" />
+            <option value="$PROJECT_DIR$/natives/windows" />
+            <option value="$PROJECT_DIR$/natives/windows/amd64" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

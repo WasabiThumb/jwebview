@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.31)
 project(jwebview C CXX)
 
-cmake_policy(VERSION 3.16)
+cmake_policy(PUSH)
 cmake_policy(SET CMP0174 NEW)
 
 set(CMAKE_C_STANDARD 17)
@@ -14,10 +14,13 @@ find_package(JNI)
 include(FetchContent)
 FetchContent_Declare(
         webview
-        GIT_REPOSITORY https://github.com/webview/webview
-        GIT_TAG 0.12.0)
+        GIT_REPOSITORY "https://github.com/webview/webview"
+        GIT_TAG "0.12.0"
+)
 FetchContent_MakeAvailable(webview)
 
 add_library(jwebview SHARED ${sources})
 target_include_directories(jwebview PUBLIC include)
 target_link_libraries(jwebview PRIVATE JNI::JNI webview::core_static)
+
+cmake_policy(POP)

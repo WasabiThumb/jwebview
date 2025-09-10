@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.31)
 project(jwebview C CXX)
 
+cmake_policy(VERSION 3.16)
+cmake_policy(SET CMP0174 NEW)
+
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
-cmake_policy(SET CMP0174 NEW)
 
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS src/*.c src/*.h)
 

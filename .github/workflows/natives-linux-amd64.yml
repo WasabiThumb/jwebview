@@ -23,6 +23,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582
 
+      - name: Install build dependencies
+        run: sudo apt install -y libgtk-4-dev libwebkitgtk-6.0-dev
+
       - name: Build
         run: ./gradlew :natives:build
 

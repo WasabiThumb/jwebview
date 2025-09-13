@@ -16,12 +16,24 @@ static bind_handler_t BIND_HANDLER;
 
 // Helpers
 
-typedef struct metrics {
+#ifdef _WIN32
+#pragma pack(push, 1) 
+#define PACKED
+#else
+#define PACKED __attribute__((packed))
+#endif
+
+typedef struct PACKED metrics {
     int none[2];
     int min[2];
     int max[2];
     int fixed[2];
-} __attribute__((__packed__)) metrics_t;
+} metrics_t;
+
+#ifdef _WIN32
+#pragma pack(pop)
+#endif
+
 
 #define CHECK(x) do {                                                          \
                      webview_error_t err = (x);                                \
@@ -30,19 +42,19 @@ typedef struct metrics {
 
 // JNI Calls
 
-JNIEXPORT jint JNICALL Java_io_github_wasabithumb_jwebview_JWebViewProviderImpl_setup(JNIEnv *env, jclass) {
+JNIEXPORT jint JNICALL Java_io_github_wasabithumb_jwebview_JWebViewProviderImpl_setup(JNIEnv *env, jclass cls) {
     return bridge_init(&BRIDGE, env) ||
         dispatch_handler_init(&DISPATCH_HANDLER, env) ||
         bind_handler_init(&BIND_HANDLER, env, &BRIDGE);
 }
 
-JNIEXPORT jstring JNICALL Java_io_github_wasabithumb_jwebview_JWebViewImpl_version(JNIEnv *env, jobject) {
+JNIEXPORT jstring JNICALL Java_io_github_wasabithumb_jwebview_JWebViewImpl_version(JNIEnv *env, jobject obj) {
     const webview_version_info_t *info = webview_version();
     const char *str = info->version_number;
     return bridge_string_decode(&BRIDGE, env, str);
 }
 
-JNIEXPORT jlong JNICALL Java_io_github_wasabithumb_jwebview_JWebViewImpl_create0(JNIEnv *env, jobject, jboolean debug, jobject buf) {
+JNIEXPORT jlong JNICALL Java_io_github_wasabithumb_jwebview_JWebViewImpl_create0(JNIEnv *env, jobject obj, jboolean debug, jobject buf) {
     webview_t handle = webview_create(debug == JNI_TRUE ? 1 : 0, NULL);
     if (handle == NULL) {
         bridge_raise(&BRIDGE, env, WEBVIEW_ERROR_UNSPECIFIED);
@@ -67,7 +79,7 @@ JNIEXPORT jlong JNICALL Java_io_github_wasabithumb_jwebview_JWebViewImpl_create0
     return (jlong) handle;
 }
 
-JNIEXPORT jstring JNICALL Java_io_github_wasabithumb_jwebview_except_WebViewExceptionImpl_strerror(JNIEnv *env, jclass, jint code) {
+JNIEXPORT jstring JNICALL Java_io_github_wasabithumb_jwebview_except_WebViewExceptionImpl_strerror(JNIEnv *env, jclass cls, jint code) {
     const char *str;
     switch (code) {
         case WEBVIEW_ERROR_MISSING_DEPENDENCY:
@@ -169,7 +181,7 @@ JNIEXPORT void JNICALL Java_io_github_wasabithumb_jwebview_WebViewImpl_eval0(JNI
     CHECK(webview_eval(wv, chars));
 }
 
-JNIEXPORT jint JNICALL Java_io_github_wasabithumb_jwebview_WebViewImpl_bindDataSize(JNIEnv *, jobject) {
+JNIEXPORT jint JNICALL Java_io_github_wasabithumb_jwebview_WebViewImpl_bindDataSize(JNIEnv *env, jobject obj) {
     return sizeof(bind_registration_t);
 }
 
@@ -180,7 +192,7 @@ JNIEXPORT void JNICALL Java_io_github_wasabithumb_jwebview_WebViewImpl_bind0(JNI
     CHECK(bind_handler_register(&BIND_HANDLER, env, ptr, wv, chars, cb));
 }
 
-JNIEXPORT void JNICALL Java_io_github_wasabithumb_jwebview_WebViewImpl_unbind0(JNIEnv *env, jobject, jstring name, jobject buf) {
+JNIEXPORT void JNICALL Java_io_github_wasabithumb_jwebview_WebViewImpl_unbind0(JNIEnv *env, jobject obj, jstring name, jobject buf) {
     const char *chars = bridge_string_encode(&BRIDGE, env, name);
     void *ptr = (*env)->GetDirectBufferAddress(env, buf);
     CHECK(bind_handler_unregister(ptr, env, chars));

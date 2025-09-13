@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <malloc.h>
 #include "dispatch.h"
 
 //
@@ -10,7 +9,7 @@ typedef struct dispatch_registration {
     jobject callback_ref;
 } dispatch_registration_t;
 
-static void dispatch_callback(webview_t __attribute__((unused)) wv, void *arg) {
+static void dispatch_callback(webview_t wv, void *arg) {
     const dispatch_registration_t *registration = arg;
     JavaVM *vm = registration->handler->vm;
     jmethodID m_invoke = registration->handler->m_invoke;

@@ -36,7 +36,11 @@ fun Project.buildOrDemandNative(
     if (OperatingSystem.host() == os && Architecture.host() == arch) {
         val nativesProject = project(":natives")
         val nativesBuild = nativesProject.layout.buildDirectory
-        val nativesBinary = nativesBuild.file("cmake/${libName}")
+        val nativesBinary = if (os == OperatingSystem.WINDOWS) {
+            nativesBuild.file("cmake/Release/${libName}")
+        } else {
+            nativesBuild.file("cmake/${libName}")
+        }
 
         tasks.withType(ProcessResources::class.java) { task ->
             task.dependsOn(nativesProject.tasks.named("assemble"))

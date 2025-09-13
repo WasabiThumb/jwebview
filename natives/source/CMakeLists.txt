@@ -11,7 +11,7 @@ find_package(JNI)
 include(FetchContent)
 FetchContent_Declare(
         webview
-        GIT_REPOSITORY "https://github.com/WasabiThumb/webview"
+        GIT_REPOSITORY "https://github.com/webview/webview"
         GIT_TAG "HEAD"
 )
 FetchContent_MakeAvailable(webview)

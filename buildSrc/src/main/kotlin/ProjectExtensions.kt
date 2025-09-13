@@ -6,6 +6,8 @@ import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.external.javadoc.CoreJavadocOptions
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.language.jvm.tasks.ProcessResources
+import java.io.FileInputStream
+import java.io.FileOutputStream
 
 //
 
@@ -33,29 +35,48 @@ fun Project.buildOrDemandNative(
     libName: String,
     libPath: String = "natives/${os.id}/${arch.id}"
 ) {
+    val destDir = this.layout.projectDirectory.dir("src/main/resources").dir(libPath)
+    val destFile = destDir.file(libName)
+
     if (OperatingSystem.host() == os && Architecture.host() == arch) {
         val nativesProject = project(":natives")
         val nativesBuild = nativesProject.layout.buildDirectory
-        val nativesBinary = if (os == OperatingSystem.WINDOWS) {
+        val srcFile = if (os == OperatingSystem.WINDOWS) {
             nativesBuild.file("cmake/Release/${libName}")
         } else {
             nativesBuild.file("cmake/${libName}")
         }
 
-        tasks.withType(ProcessResources::class.java) { task ->
+        val copier = tasks.register("copyNatives") { task ->
             task.dependsOn(nativesProject.tasks.named("assemble"))
-            task.from(nativesBinary) { spec ->
-                spec.into(libPath)
+            task.doFirst {
+                val destDirFile = destDir.asFile
+                if (!destDirFile.isDirectory && !destDirFile.mkdirs()) {
+                    throw Error("Failed to create directory: $destDirFile")
+                }
+
+                FileInputStream(srcFile.get().asFile).use { i ->
+                    FileOutputStream(destFile.asFile, false).use { o ->
+                        val buf = ByteArray(4096)
+                        var n: Int
+                        while (true) {
+                            n = i.read(buf)
+                            if (n == -1) break
+                            o.write(buf, 0, n)
+                        }
+                        o.flush()
+                    }
+                }
             }
         }
-    } else {
-        val file = this.layout.projectDirectory.dir("src/main/resources")
-            .dir(libPath)
-            .file(libName)
 
+        tasks.withType(ProcessResources::class.java) { task ->
+            task.dependsOn(copier)
+        }
+    } else {
         tasks.named("assemble") { task ->
             task.doFirst {
-                if (!file.asFile.exists()) {
+                if (!destFile.asFile.exists()) {
                     throw Error("Foreign library \"${libName}\" not found")
                 }
             }

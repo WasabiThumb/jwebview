@@ -34,6 +34,10 @@ tasks.test {
     useJUnitPlatform()
 }
 
+tasks.javadoc {
+    enabled = false
+}
+
 //
 
 mavenPublishing {
